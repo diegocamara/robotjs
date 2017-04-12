@@ -13,11 +13,11 @@ var robot = new Robot({
             startAt: 90
         }
     }
-});
+}, board);
 
 board.on('ready', function () {
 
-    //robot.initSystem();
-    //robot.idle();
+    robot.initSystem();
+    robot.idle();
 
 });

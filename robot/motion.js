@@ -18,11 +18,11 @@ function Motion(opts) {
     };
 
     if (opts && opts.baseServoOptions) {
-        configureServoOptions(opts.baseServoOptions, this.baseServoOptions);
+        configureServoOptions(this.baseServoOptions, opts.baseServoOptions);
     }
 
     if (opts && opts.headServoOptions) {
-        configureServoOptions(opts.headServoOptions, this.headServoOptions);
+        configureServoOptions(this.headServoOptions, opts.headServoOptions);
     }
 
     this.base;
@@ -31,7 +31,7 @@ function Motion(opts) {
 }
 
 Motion.prototype.initializeHardware = function () {
-
+    
     this.base = new five.Servo(this.baseServoOptions);
     this.head = new five.Servo(this.headServoOptions);
 
@@ -67,7 +67,7 @@ Motion.prototype.idle = function () {
 
 }
 
-function configureServoOptions(filterServoMotionOptions, motionServoOptions) {
+function configureServoOptions(motionServoOptions, filterServoMotionOptions) {
 
     if (filterServoMotionOptions.address) {
         motionServoOptions.address = filterServoMotionOptions.address;
@@ -97,8 +97,7 @@ function generateRandomSegment(animation, opts) {
         cuePoints: cuePoints,
         keyFrames: keyFrames,
         duration: duration,
-        oncomplete: function () {
-            console.log('animation complete');
+        oncomplete: function () {            
             animation.enqueue(generateRandomSegment(animation, opts));
         },
     };
