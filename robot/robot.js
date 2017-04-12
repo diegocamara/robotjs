@@ -1,12 +1,16 @@
 var five = require('johnny-five');
 
-function Robot() {
+function Robot(opts) {   
     var Motion = require('./motion');
-    this.motion = new Motion();
+    var motionOpts;
+    if (opts && opts.motionOptions) {
+        motionOpts = opts.motionOptions;
+    }
+    this.motion = new Motion(motionOpts);
 }
 
 Robot.prototype.initSystem = function () {
-    this.motion.initializeHardware();
+    this.motion.initializeHardware();    
 }
 
 Robot.prototype.idle = function () {

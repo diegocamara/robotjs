@@ -2,25 +2,38 @@ var five = require('johnny-five');
 var easeFunctions = require('./ease-component-functions').easeComponentFunctions;
 
 function Motion(opts) {
+
+    this.baseServoOptions = {
+        address: 0x40,
+        controller: 'PCA9685',
+        pin: 0,
+        startAt: 0
+    };
+
+    this.headServoOptions = {
+        address: 0x40,
+        controller: 'PCA9685',
+        pin: 1,
+        startAt: 0
+    };
+
+    if (opts && opts.baseServoOptions) {
+        configureServoOptions(opts.baseServoOptions, this.baseServoOptions);
+    }
+
+    if (opts && opts.headServoOptions) {
+        configureServoOptions(opts.headServoOptions, this.headServoOptions);
+    }
+
     this.base;
     this.head;
+
 }
 
 Motion.prototype.initializeHardware = function () {
 
-    this.base = new five.Servo({
-        address: 0x40,
-        controller: 'PCA9685',
-        pin: 0,
-        startAt: 90
-    });
-
-    this.head = new five.Servo({
-        address: 0x40,
-        controller: 'PCA9685',
-        pin: 1,
-        startAt: 80
-    });
+    this.base = new five.Servo(this.baseServoOptions);
+    this.head = new five.Servo(this.headServoOptions);
 
 }
 
@@ -49,8 +62,28 @@ Motion.prototype.idle = function () {
     var animationBase = new five.Animation(this.base);
     var animationHead = new five.Animation(this.head);
 
-    animationBase.enqueue(generateRandomSegment(animationBase, {minDegree: 40, maxDegree: 120, minDuration: 10000, maxDuration: 50000}));
-    animationHead.enqueue(generateRandomSegment(animationHead, {minDegree: 60, maxDegree: 100, minDuration: 10000, maxDuration: 50000}));
+    animationBase.enqueue(generateRandomSegment(animationBase, { minDegree: 40, maxDegree: 120, minDuration: 10000, maxDuration: 50000 }));
+    animationHead.enqueue(generateRandomSegment(animationHead, { minDegree: 60, maxDegree: 100, minDuration: 10000, maxDuration: 50000 }));
+
+}
+
+function configureServoOptions(filterServoMotionOptions, motionServoOptions) {
+
+    if (filterServoMotionOptions.address) {
+        motionServoOptions.address = filterServoMotionOptions.address;
+    }
+
+    if (filterServoMotionOptions.controller) {
+        motionServoOptions.controller = filterServoMotionOptions.controller;
+    }
+
+    if (filterServoMotionOptions.pin) {
+        motionServoOptions.pin = filterServoMotionOptions.pin;
+    }
+
+    if (filterServoMotionOptions.startAt) {
+        motionServoOptions.startAt = filterServoMotionOptions.startAt;
+    }
 
 }
 
@@ -64,10 +97,10 @@ function generateRandomSegment(animation, opts) {
         cuePoints: cuePoints,
         keyFrames: keyFrames,
         duration: duration,
-        oncomplete: function(){
+        oncomplete: function () {
             console.log('animation complete');
             animation.enqueue(generateRandomSegment(animation, opts));
-        }, 
+        },
     };
 }
 
@@ -87,7 +120,7 @@ function getRandomIntRange(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function getRandomEaseFunction() {    
+function getRandomEaseFunction() {
     return easeFunctions[getRandomIntRange(0, (easeFunctions.length - 1))];
 }
 
