@@ -6,18 +6,17 @@ var robot = new Robot({
     motionOptions: {
         baseServoOptions: {
             pin: 0,
-            startAt: 80
+            startAt: 90
         },
         headServoOptions: {
             pin: 1,
-            startAt: 90
+            startAt: 80
         }
     }
 }, board);
 
 board.on('ready', function () {
 
-    robot.initSystem();
-    robot.idle();
+    robot.initSystem();    
 
 });

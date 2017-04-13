@@ -21,6 +21,7 @@ function Robot(opts, board) {
 Robot.prototype.initSystem = function () {
     this.motion.initializeHardware();  
     this.frontOled.initOled(this.board);
+    this.idle();
 }
 
 Robot.prototype.idle = function () {
